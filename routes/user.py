@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.engine.row import Row
 from config.db import conn
@@ -12,7 +12,7 @@ f = Fernet(key)
 
 user = APIRouter()
 
-@user.get("/users")
+@user.get("/users", response_model=list[User], tags=["users"])
 def get_all_users():
     try:
         result = conn.execute(users.select()).fetchall()
@@ -25,7 +25,7 @@ def get_all_users():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@user.post("/users")
+@user.post("/users", response_model=User, tags=["users"])
 def create_user(user_data: User):
     try:
         # Crear el nuevo usuario
@@ -60,7 +60,7 @@ def create_user(user_data: User):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@user.get("/users/{id}")
+@user.get("/users/{id}", response_model=User, tags=["users"])
 def get_user_by_id(user_id: int):
     try:
         result = conn.execute(users.select().where(users.c.id == user_id)).fetchone()
@@ -75,7 +75,7 @@ def get_user_by_id(user_id: int):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@user.put("/users/{id}")
+@user.put("/users/{id}", response_model=User, tags=["users"])
 def update_user(user_id: int, user_data: User):
     try:
         # Verificar si el usuario existe
@@ -98,7 +98,7 @@ def update_user(user_id: int, user_data: User):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@user.delete("/users/{id}")
+@user.delete("/users/{id}", status_code=status.HTTP_204_NO_CONTENT, tags=["users"])
 def delete_user(user_id: int):
     try:
         # Verificar si el usuario existe
@@ -114,7 +114,7 @@ def delete_user(user_id: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@user.patch("/users/{id}")
+@user.patch("/users/{id}", response_model=User, tags=["users"])
 def update_user_partial(user_id: int, user_data: dict):
     try:
         # Verificar si el usuario existe
