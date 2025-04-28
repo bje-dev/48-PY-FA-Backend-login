@@ -1,3 +1,4 @@
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from routes.user import user
 
@@ -11,3 +12,17 @@ app = FastAPI(
     openapi_tags=tags_metadata
 )
 app.include_router(user)
+
+# Configuración de CORS
+origins = [
+    "http://localhost",        # Dirección del frontend
+    "http://localhost:3000",  # Si usas un frontend React/Vue/Angular en otro puerto
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # Métodos permitidos: GET, POST, etc.
+    allow_headers=["*"],  # Headers permitidos
+)

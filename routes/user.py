@@ -31,8 +31,11 @@ def create_user(user_data: User):
         # Crear el nuevo usuario
         new_user = {
             "name": user_data.name,
+            "surname": user_data.surname,
             "email": user_data.email,
+            "alias": user_data.alias,
             "password": f.encrypt(user_data.password.encode("utf-8")),
+            "agree": user_data.agree
         }
 
         # Insertar en la base de datos
@@ -53,7 +56,11 @@ def create_user(user_data: User):
         response_data = {
             "id": created_user.id,
             "name": created_user.name,
-            "email": created_user.email
+            "surname": created_user.surname,
+            "email": created_user.email,
+            "alias": created_user.alias,
+            "agree": created_user.agree
+
         }
         return JSONResponse(content=response_data, status_code=201)
 
